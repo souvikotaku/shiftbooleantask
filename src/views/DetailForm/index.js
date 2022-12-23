@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 
 const DetailForm = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   useEffect(() => {
     console.log("item data", location.state);
   }, []);
@@ -11,19 +12,29 @@ const DetailForm = () => {
     <div class="container" style={{ paddingTop: "5%" }}>
       <div class="card text-center">
         <div class="card-header">
-          <Link to="/" class="btn btn-primary">
+          {/* <Link to="/" class="btn btn-primary">
             Go back
-          </Link>
-          Featured
+          </Link> */}
+          Article Detail
         </div>
         <div class="card-body">
           <h5 class="card-title">{location.state?.title}</h5>
           <p class="card-text">{location.state?.content}</p>
-          <a href="#" class="btn btn-primary">
+          {/* <a href="#" class="btn btn-primary">
             Go somewhere
-          </a>
+          </a> */}
+          <p
+            //   href="#"
+            onClick={() => {
+              //   handleDelete(location.state?.id);
+              navigate("/", { state: { fromPage: "articledetail" } });
+            }}
+            className="btn btn-primary"
+          >
+            Go Back
+          </p>
         </div>
-        <div class="card-footer text-muted">2 days ago</div>
+        <div class="card-footer text-muted">{location.state?.date}</div>
       </div>
     </div>
   );

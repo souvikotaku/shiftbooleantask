@@ -1,14 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./styles.css";
 
+const getArticles = () => {
+  let article = localStorage.getItem("lists");
+  console.log("article", article);
+
+  if (article) {
+    return JSON.parse(localStorage.getItem("lists"));
+  } else {
+    return [];
+  }
+};
+
 const MainForm = () => {
+  const location = useLocation();
+
   const navigate = useNavigate();
   const [articleTitle, setArticleTitle] = useState("");
   const [articleContent, setArticleContent] = useState("");
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(getArticles());
+  const [newdate, setnewdate] = useState(new Date());
 
-  const [showFormnow, setshowForm] = useState(false);
+  const [showFormnow, setshowForm] = useState(
+    location.state?.fromPage ? true : false
+  );
 
   const showform = () => {
     if (showFormnow === false) {
@@ -19,23 +35,28 @@ const MainForm = () => {
   };
 
   const handleDelete = (id) => {
-    var index = items
-      .map(function (e) {
-        return e.id;
-      })
-      .indexOf(id);
-
-    items.splice(index, 1);
-
-    navigate("/");
+    const updatedItems = items.filter((elem, ind) => {
+      return ind !== id;
+    });
+    setItems(updatedItems);
   };
 
   const addItem = () => {
-    setItems([...items, { title: articleTitle, content: articleContent }]);
+    setItems([
+      ...items,
+      {
+        date: newdate.toString(),
+        title: articleTitle,
+        content: articleContent,
+      },
+    ]);
     setArticleTitle("");
     setArticleContent("");
   };
 
+  useEffect(() => {
+    localStorage.setItem("lists", JSON.stringify(items));
+  }, [items]);
   return (
     <div>
       {" "}
@@ -137,15 +158,17 @@ const MainForm = () => {
 
                     <p
                       //   href="#"
-                      onClick={() =>
-                        //   navigate("/detail", {
-                        //     state: item,
-                        //   })
-                        handleDelete(index)
+                      onClick={
+                        () =>
+                          navigate("/detail", {
+                            state: item,
+                          })
+                        // handleDelete(index)
                       }
                       className="btn btn-primary"
                     >
-                      Delete
+                      {/* Delete */}
+                      View Details
                     </p>
                   </div>
                 </div>
