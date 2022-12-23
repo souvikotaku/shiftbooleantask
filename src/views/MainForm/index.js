@@ -9,10 +9,10 @@ const defaultformdata = {
 
 const MainForm = () => {
   const navigate = useNavigate();
-  const [formdata, setFormdata] = useState(defaultformdata);
   const [articleTitle, setArticleTitle] = useState("");
   const [articleContent, setArticleContent] = useState("");
-  const [theArray, setTheArray] = useState([]);
+  const [items, setItems] = useState([]);
+
   const [showFormnow, setshowForm] = useState(false);
 
   const showform = () => {
@@ -22,21 +22,23 @@ const MainForm = () => {
       setshowForm(false);
     }
   };
-  //   useEffect(() => {
-  //     setTheArray(JSON.parse(sessionStorage.getItem("articleArray")));
-  //   }, []);
-  const articleArray = [];
 
   const handleDelete = (id) => {
-    var index = theArray
+    var index = items
       .map(function (e) {
         return e.id;
       })
       .indexOf(id);
 
-    theArray.splice(index, 1);
+    items.splice(index, 1);
 
     navigate("/");
+  };
+
+  const addItem = () => {
+    setItems([...items, { title: articleTitle, content: articleContent }]);
+    setArticleTitle("");
+    setArticleContent("");
   };
 
   return (
@@ -76,12 +78,13 @@ const MainForm = () => {
             <input
               placeholder="Enter Title"
               type="text"
+              value={articleTitle}
               className="form-control"
               onChange={(event) => {
                 console.log(event.target.value);
                 setArticleTitle(event.target.value);
-                sessionStorage.setItem("articleTitle", event.target.value);
-                console.log(localStorage.getItem("articleTitle"));
+                // sessionStorage.setItem("articleTitle", event.target.value);
+                // console.log(localStorage.getItem("articleTitle"));
               }}
             />
 
@@ -91,12 +94,13 @@ const MainForm = () => {
             <input
               placeholder="Enter Content"
               type="text"
+              value={articleContent}
               className="form-control"
               onChange={(event) => {
                 console.log(event.target.value);
                 setArticleContent(event.target.value);
-                sessionStorage.setItem("articleContent", event.target.value);
-                console.log(localStorage.getItem("articleContent"));
+                // sessionStorage.setItem("articleContent", event.target.value);
+                // console.log(localStorage.getItem("articleContent"));
               }}
             />
             <button
@@ -107,14 +111,15 @@ const MainForm = () => {
               className="btn btn-primary"
               onClick={(event) => {
                 event.preventDefault();
-                const formdetails = {
-                  title: sessionStorage.getItem("articleTitle"),
-                  content: sessionStorage.getItem("articleContent"),
-                };
-                articleArray.push(formdetails);
-                setTheArray([...theArray, formdetails]);
-                console.log(articleArray);
-                console.log(formdetails);
+                // const formdetails = {
+                //   title: sessionStorage.getItem("articleTitle"),
+                //   content: sessionStorage.getItem("articleContent"),
+                // };
+                // articleArray.push(formdetails);
+                // setTheArray([...theArray, formdetails]);
+                // console.log(articleArray);
+                // console.log(formdetails);
+                addItem();
               }}
               //   onClick={addEntryClick}
             >
@@ -126,15 +131,15 @@ const MainForm = () => {
       <div
         className="container viewarticlediv"
         style={{
-          display: theArray.length != 0 ? "block" : "none",
+          display: items.length != 0 ? "block" : "none",
         }}
       >
         <div className="row">
-          {console.log("the array", theArray)}
+          {console.log("the array", items)}
           {/* {setTheArray([...theArray, formdetails])} */}
           {/* {sessionStorage.setItem("articleArray", JSON.stringify(theArray))} */}
-          {theArray &&
-            theArray.map((item, index) => (
+          {items &&
+            items.map((item, index) => (
               <div
                 key={index}
                 className="col-sm-12 col-md-3"
@@ -143,21 +148,7 @@ const MainForm = () => {
                 <div className="card">
                   <div className="card-body">
                     <h5 className="card-title">{item?.title}</h5>
-                    {/* <p className="card-text">
-                  With supporting text below as a natural lead-in to additional
-                  content.
-                </p> */}
-                    {/* <p
-                      //   href="#"
-                      //   onClick={() =>
-                      //     navigate("/detail", {
-                      //       state: item,
-                      //     })
-                      //   }
-                      className="btn btn-primary"
-                    >
-                      Edit
-                    </p> */}
+
                     <p
                       //   href="#"
                       onClick={() =>
