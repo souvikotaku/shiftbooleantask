@@ -106,17 +106,9 @@ const MainForm = () => {
               className="btn btn-primary"
               onClick={(event) => {
                 event.preventDefault();
-                // const formdetails = {
-                //   title: sessionStorage.getItem("articleTitle"),
-                //   content: sessionStorage.getItem("articleContent"),
-                // };
-                // articleArray.push(formdetails);
-                // setTheArray([...theArray, formdetails]);
-                // console.log(articleArray);
-                // console.log(formdetails);
+
                 addItem();
               }}
-              //   onClick={addEntryClick}
             >
               Post
             </button>
@@ -131,8 +123,7 @@ const MainForm = () => {
       >
         <div className="row">
           {console.log("the array", items)}
-          {/* {setTheArray([...theArray, formdetails])} */}
-          {/* {sessionStorage.setItem("articleArray", JSON.stringify(theArray))} */}
+
           {items &&
             items.map((item, index) => (
               <div
