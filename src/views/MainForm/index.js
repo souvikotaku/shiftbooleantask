@@ -2,11 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles.css";
 
-const defaultformdata = {
-  title: "",
-  content: "",
-};
-
 const MainForm = () => {
   const navigate = useNavigate();
   const [articleTitle, setArticleTitle] = useState("");
