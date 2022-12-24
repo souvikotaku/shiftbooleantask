@@ -57,6 +57,10 @@ const MainForm = () => {
   useEffect(() => {
     localStorage.setItem("lists", JSON.stringify(items));
   }, [items]);
+
+  const removeAll = () => {
+    setItems([]);
+  };
   return (
     <div>
       {" "}
@@ -142,6 +146,17 @@ const MainForm = () => {
           display: items.length != 0 ? "block" : "none",
         }}
       >
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <h4>Article List</h4>
+          <p
+            //   href="#"
+            onClick={() => removeAll()}
+            className="btn btn-danger"
+          >
+            {/* Delete */}
+            Remove All
+          </p>
+        </div>
         <div className="row">
           {console.log("the array", items)}
 
@@ -155,21 +170,32 @@ const MainForm = () => {
                 <div className="card">
                   <div className="card-body">
                     <h5 className="card-title">{item?.title}</h5>
-
-                    <p
-                      //   href="#"
-                      onClick={
-                        () =>
-                          navigate("/detail", {
-                            state: item,
-                          })
-                        // handleDelete(index)
-                      }
-                      className="btn btn-primary"
-                    >
-                      {/* Delete */}
-                      View Details
-                    </p>
+                    <div className="row">
+                      <div className="col-12">
+                        <p
+                          onClick={() =>
+                            navigate("/detail", {
+                              state: {
+                                item,
+                                index,
+                              },
+                            })
+                          }
+                          className="btn btn-primary w-50"
+                        >
+                          View Details
+                        </p>
+                      </div>
+                      <div className="col-12">
+                        <p
+                          onClick={() => handleDelete(index)}
+                          className="btn btn-danger w-50"
+                        >
+                          {/* Delete */}
+                          Delete
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
