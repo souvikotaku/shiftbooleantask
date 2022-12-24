@@ -210,6 +210,7 @@ const MainForm = () => {
                 event.preventDefault();
                 if (articleTitle == "" || articleContent == "") {
                   console.log("either one of the fields empty");
+                  toast.error("Please enter both fields!");
                 } else {
                   addItem();
                 }
