@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./styles.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import swal from "sweetalert";
 
 const getArticles = () => {
   let article = localStorage.getItem("lists");
@@ -21,6 +24,7 @@ const MainForm = () => {
   const [articleContent, setArticleContent] = useState("");
   const [items, setItems] = useState(getArticles());
   const [newdate, setnewdate] = useState(new Date());
+  const [toggleSubmit, setToggleSubmit] = useState(true);
 
   const [showFormnow, setshowForm] = useState(
     location.state?.fromPage ? true : false
@@ -35,16 +39,25 @@ const MainForm = () => {
   };
 
   const handleDelete = (id) => {
-    const updatedItems = items.filter((elem, ind) => {
-      return ind !== id;
+    const updatedItems = items.filter((item) => {
+      return item.id !== id;
     });
     setItems(updatedItems);
+    swal("Article Deleted!", "", "error");
+  };
+
+  const handleEdit = (id) => {
+    const newEditItem = items.find((item) => {
+      return item.id === id;
+    });
+    console.log("newEditItem", newEditItem);
   };
 
   const addItem = () => {
     setItems([
       ...items,
       {
+        id: new Date().getTime().toString(),
         date: newdate.toString(),
         title: articleTitle,
         content: articleContent,
@@ -52,6 +65,7 @@ const MainForm = () => {
     ]);
     setArticleTitle("");
     setArticleContent("");
+    toast.success("Article Added!");
   };
 
   useEffect(() => {
@@ -60,6 +74,7 @@ const MainForm = () => {
 
   const removeAll = () => {
     setItems([]);
+    swal("All Articles Removed!", "", "error");
   };
   return (
     <div>
@@ -67,7 +82,7 @@ const MainForm = () => {
       {/* <div style={{ paddingTop: "5%" }}>
         <button className="btn btn-primary">Create New Article</button>
       </div> */}
-      <div style={{ paddingTop: "5%" }}>
+      <div style={{ paddingTop: "3%" }}>
         <button
           onClick={() => {
             showform();
@@ -88,13 +103,20 @@ const MainForm = () => {
         <form
           style={{
             width: "30%",
-            border: "1px solid lightgrey",
+            // border: "1px solid lightgrey",
             borderRadius: "10px",
             padding: "1%",
+            boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
           }}
+          className="backgroundcard"
         >
           <div className="form-group">
-            <label htmlFor="exampleInputEmail1">Article Title</label>
+            <label
+              htmlFor="exampleInputEmail1"
+              style={{ fontWeight: "bold", fontFamily: "helvetica" }}
+            >
+              Article Title
+            </label>
             <input
               placeholder="Enter Title"
               type="text"
@@ -106,12 +128,40 @@ const MainForm = () => {
                 // sessionStorage.setItem("articleTitle", event.target.value);
                 // console.log(localStorage.getItem("articleTitle"));
               }}
+              style={{
+                backgroundColor: "bisque",
+              }}
             />
 
-            <label htmlFor="exampleInputEmail1" style={{ paddingTop: "3%" }}>
+            <label
+              htmlFor="exampleInputEmail1"
+              style={{
+                paddingTop: "3%",
+                fontWeight: "bold",
+                fontFamily: "helvetica",
+              }}
+            >
               Article Content
             </label>
-            <input
+            <textarea
+              class="form-control"
+              id="exampleFormControlTextarea3"
+              rows="5"
+              placeholder="Enter Content"
+              type="text"
+              value={articleContent}
+              // className="form-control"
+              onChange={(event) => {
+                console.log(event.target.value);
+                setArticleContent(event.target.value);
+                // sessionStorage.setItem("articleContent", event.target.value);
+                // console.log(localStorage.getItem("articleContent"));
+              }}
+              style={{
+                backgroundColor: "bisque",
+              }}
+            />
+            {/* <input
               placeholder="Enter Content"
               type="text"
               value={articleContent}
@@ -122,17 +172,47 @@ const MainForm = () => {
                 // sessionStorage.setItem("articleContent", event.target.value);
                 // console.log(localStorage.getItem("articleContent"));
               }}
-            />
+              style={{
+                backgroundColor: "bisque",
+              }}
+            /> */}
             <button
-              disabled={
-                articleTitle == "" || articleContent == "" ? true : false
+              data-toggle="tooltip"
+              data-placement="bottom"
+              title={
+                articleTitle == "" || articleContent == ""
+                  ? "Enter both fields"
+                  : "Click to add article"
               }
-              style={{ marginTop: "3%", width: "40%" }}
-              className="btn btn-primary"
+              // disabled={
+              //   articleTitle == "" || articleContent == "" ? true : false
+              // }
+              style={{
+                marginTop: "3%",
+                width: "40%",
+                background:
+                  articleTitle == "" || articleContent == ""
+                    ? "lightgrey"
+                    : "#198754",
+                cursor:
+                  articleTitle == "" || articleContent == ""
+                    ? "auto"
+                    : "pointer",
+                color:
+                  articleTitle == "" || articleContent == "" ? "grey" : "white",
+              }}
+              className={
+                articleTitle == "" || articleContent == ""
+                  ? "btn"
+                  : "btn btn-success"
+              }
               onClick={(event) => {
                 event.preventDefault();
-
-                addItem();
+                if (articleTitle == "" || articleContent == "") {
+                  console.log("either one of the fields empty");
+                } else {
+                  addItem();
+                }
               }}
             >
               Post
@@ -144,6 +224,7 @@ const MainForm = () => {
         className="container viewarticlediv"
         style={{
           display: items.length != 0 ? "block" : "none",
+          boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -163,13 +244,20 @@ const MainForm = () => {
           {items &&
             items.map((item, index) => (
               <div
-                key={index}
+                key={item?.id}
                 className="col-sm-12 col-md-3"
                 style={{ marginTop: "10px" }}
               >
-                <div className="card">
+                <div
+                  className="card backgroundcard"
+                  style={{
+                    boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
+                  }}
+                >
                   <div className="card-body">
-                    <h5 className="card-title">{item?.title}</h5>
+                    <h5 className="card-title">{`${index + 1}.${" "}${
+                      item?.title
+                    }`}</h5>
                     <div className="row">
                       <div className="col-12">
                         <p
@@ -188,7 +276,23 @@ const MainForm = () => {
                       </div>
                       <div className="col-12">
                         <p
-                          onClick={() => handleDelete(index)}
+                          onClick={() => {
+                            handleEdit(item?.id);
+                            navigate("/edit", {
+                              state: {
+                                item,
+                              },
+                            });
+                          }}
+                          className="btn btn-warning w-50"
+                        >
+                          {/* Delete */}
+                          Edit
+                        </p>
+                      </div>
+                      <div className="col-12">
+                        <p
+                          onClick={() => handleDelete(item?.id)}
                           className="btn btn-danger w-50"
                         >
                           {/* Delete */}
@@ -202,6 +306,7 @@ const MainForm = () => {
             ))}
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

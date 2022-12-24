@@ -1,8 +1,13 @@
 .viewarticlediv{
     padding-top: 2%;
     margin-top: 1%;
-    border: 1px solid lightgrey;
+    border: 1px solid burlywood;
     border-radius: 10px;
     padding-bottom: 2%;
     margin-bottom: 2%;
+    background-color: burlywood;
+}
+.backgroundcard{
+    border: 1px solid darksalmon;
+    background: darksalmon;
 }
